@@ -1,4 +1,4 @@
-**ColorHub: Empowering Your Palette Creativity**
+**ColorHub: Color Palette Explorer**
 
 **Description:**
 ColorHub is your go-to web application for unlocking the world of color palettes. Seamlessly designed and feature-rich, ColorHub enables users to explore, customize, and craft stunning color schemes effortlessly.
