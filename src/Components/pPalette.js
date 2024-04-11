@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { poppalettes } from '../popPalettes';
 import logo from '../logo.png';
 
+const copy = <i class="fa-solid fa-copy"></i>
+
 function PPalette() {
     const {id} = useParams()
     const initialPalette = poppalettes.find(pal => pal.name === id)
@@ -65,19 +67,20 @@ function PPalette() {
             </div>
             
             <div className="colors">
-                {popPalette.colors.map((color, index) => {
+                {popPalette.colors.map((color, e) => {
                     return <div 
-                        key={index} 
+                        key={e} 
                         style={{background: color}}
                         className="full-color"
-                        onClick={(e) => {
-                            handleCopyToClipboard(e)
-                            handleFullColorClick(e.target.style.backgroundColor);
-                        }}
                         >
-                            <h4 data-title="Click to copy" className='name'>
+                            <button className='copy' onClick={(e) => {
+                              handleCopyToClipboard(e)
+                              handleFullColorClick(e.target.style.backgroundColor);
+                            }}>{copy}</button>
+                            <h4>
                                 {toRgb === 'hex' ? color : convertToRGB(color)}
                             </h4>
+                            
                         </div>
                 })}
             </div>
@@ -223,13 +226,12 @@ const PaletteStyled = styled.div`
     cursor: default;
 
     .full-color {
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
 
-      .name {
+      h4 {
         font-size: 1.2rem;
         color: #fff;
         text-transform: uppercase;
@@ -239,47 +241,16 @@ const PaletteStyled = styled.div`
         cursor: pointer;
       }
 
-      .name::after {
-        position: absolute;
-        top: calc(100% + 5px);
-        left: calc(50% - 50px);
-        background-color: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 5px;
-        border-radius: 5px;
-        font-size: 12px;
-        z-index: 9999;
-        visibility: hidden;
-        opacity: 0;
-        transition: visibility 0s, opacity 0.3s ease;
-      }
-
-      .name:hover::after {
-        visibility: visible;
-        opacity: 1;
-      }
-
-      .edit-icon {
+      .copy {
         position: absolute;
         top: 0;
-        right: 0;
+        left: 0;
         padding: .3rem .4rem;
         font-size: 1.1rem;
         color: #fff;
         background: transparent;
         border: none;
         cursor: pointer;
-        filter: drop-shadow(0 3px 0.3rem rgba(0, 0, 0, 0.4));
-      }
-
-      .btn-icon {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        padding: .3rem .4rem;
-        font-size: 1.1rem;
-        color: #fff;
-        background: transparent;
         filter: drop-shadow(0 3px 0.3rem rgba(0, 0, 0, 0.4));
       }
     }

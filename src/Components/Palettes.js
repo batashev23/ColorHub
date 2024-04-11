@@ -1,159 +1,174 @@
-import chroma from 'chroma-js'
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import slugify from 'react-slugify'
-import styled from 'styled-components'
-import {mypalettes} from '../myPalettes'
-import {poppalettes} from '../popPalettes'
-import logo from '../logo.png';
+import chroma from "chroma-js";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import slugify from "react-slugify";
+import styled from "styled-components";
+import { mypalettes } from "../myPalettes";
+import { poppalettes } from "../popPalettes";
+import logo from "../logo.png";
 
 function Palettes() {
-    
-    const [myPalettes, setMyPalettes] = useState(mypalettes)
-    const [popPalettes, setPopPalettes] = useState(poppalettes)
-    const [paletteName, setPaletteName] = React.useState('')
-    const [lsPalettes, setLsPalettes] = useState([])
-    
-    
-    React.useEffect(() => {
-        const mypalettes = []
+  const [myPalettes, setMyPalettes] = useState(mypalettes);
+  const [popPalettes, setPopPalettes] = useState(poppalettes);
+  const [paletteName, setPaletteName] = React.useState("");
+  const [lsPalettes, setLsPalettes] = useState([]);
 
-        for(let i = 0; i < localStorage.length; i++){
-            
-            const key = localStorage.key(i)
-            
-            if(key.startsWith('myPalette-')){
-                
-                const savedPalette = localStorage.getItem(key)
-                if(savedPalette){
-                    mypalettes.push(JSON.parse(savedPalette))
-                }
-            }
+  React.useEffect(() => {
+    const allPalletes = [];
+
+    allPalletes.push({
+      name: ("nFactorial"),
+        createdAt: 1,
+        colors: [
+            "#69d2e7","#a7dbd8","#e0e4cc","#f38630","#fa6900",
+            "#fe4365","#fc9d9a","#f9cdad","#c8c8a9","#83af9b",
+            "#ecd078","#d95b43","#c02942","#542437","#53777a",
+            "#556270","#4ecdc4","#c7f464","#ff6b6b","#c44d58"
+        ]
+    });
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      console.log(key);
+
+      if (key.startsWith("myPalette-")) {
+        const savedPalette = localStorage.getItem(key);
+        console.log(JSON.parse(savedPalette));
+
+        if (savedPalette) {
+          allPalletes.push(JSON.parse(savedPalette));
         }
-
-        console.log('before sort',mypalettes)
-        mypalettes.sort((a, b) => {
-            return a.createdAt - b.createdAt
-        })
-        console.log('after sort', mypalettes)
-        
-        setLsPalettes(mypalettes)
-
-    }, []); 
-
-    
-    const generateRandomColors = () => {
-        const colors = []
-
-        while(colors.length < 20) {
-            const color = chroma.random().hex();
-            if(chroma.valid(color)){
-                colors.push(color)
-            }
-        }
-
-        return colors
+      }
     }
 
-   
-    const addPalette = () => {
-        const newPalette = {
-            id: new Date().getTime(),
-            name: slugify(paletteName),
-            createdAt: new Date().getTime(),
-            colors: generateRandomColors()
-        }
+    console.log("before sort", mypalettes);
+    allPalletes.sort((a, b) => {
+      return a.createdAt - b.createdAt;
+    });
+    console.log("after sort", mypalettes);
 
-        
-        const key = `myPalette-${newPalette.name}`;
-        const savedPalette = localStorage.getItem(key)
-        if(savedPalette){
-            return
-        }
+    setLsPalettes(allPalletes);
+  }, []);
 
-        
-        localStorage.setItem(key, JSON.stringify(newPalette))
-        
-        setPopPalettes([...popPalettes, newPalette])
+  const generateRandomColors = () => {
+    const colors = [];
 
-        setLsPalettes([...lsPalettes, newPalette])
-
-        setMyPalettes([...myPalettes, newPalette])
-
-        setPaletteName('')
+    while (colors.length < 20) {
+      const color = chroma.random().hex();
+      if (chroma.valid(color)) {
+        colors.push(color);
+      }
     }
 
-    return (
-        <PalettesStyled>
-            <header className="header">
-                <div className="logo">
-                    <img src={logo} alt="Logo" className="logo-image" />
-                </div>
-                <div className="add-palette">
-                    <div className="input-control">
-                        <input required placeholder='Create Palette...' value={paletteName} onChange={(e) => {
-                            setPaletteName(e.target.value)
-                        }} type="text"  />
-                        <button onClick={() => {
-                            addPalette()
-                        }}>+</button>
-                    </div>
-                </div>
-            </header>
+    return colors;
+  };
 
-            <div className="pop-palettes">
-                <h2 className='h2-pop'>Popular Palettes</h2>
-                <p className="text-with-margin"></p>
-                <div className='ppalettes'>
-                    {
-                        popPalettes.slice(0, 4).map((pal, index) => {
-                            return (<Link to={`/poppalettes/${pal.name}`} key={pal.name}>
-                                <div className="poppalette">
-                                {pal.colors.map((col, i) => {
-                                    return (
-                                    <div
-                                        key={i}
-                                        className="popcolor"
-                                        style={{ backgroundColor: col }}
-                                    ></div>
-                                    );
-                                })}
-                                </div>
-                                <p>{pal.name}</p>
-                            </Link>
-                            );
-                        })
-                    }
-                </div>
-            </div>
+  const addPalette = () => {
+    const newPalette = {
+      id: new Date().getTime(),
+      name: slugify(paletteName),
+      createdAt: new Date().getTime(),
+      colors: generateRandomColors(),
+    };
 
-            <div className="my-palettes">
-                <h2 className='h2-my'>Your Palettes</h2>
-                <p className="text-margin"></p>
-                <div className='mpalettes'>
-                    {
-                        lsPalettes.map((pal, index) => {
-                            return <Link to={`/mypalettes/${pal.name}`} key={pal.name}>
-                                <div className="mypalette">
-                                    {pal.colors.map((col, i) => {
-                                        return <div 
-                                            key={i} 
-                                            className="mycolor"
-                                            style={{backgroundColor: col}}
-                                            >
-                                            </div>
-                                    })}
-                                </div>
-                                <p>{pal.name}</p>
-                            </Link>
-                        })
-                    }
+    const key = `myPalette-${newPalette.name}`;
+    const savedPalette = localStorage.getItem(key);
+    if (savedPalette) {
+      return;
+    }
+
+    localStorage.setItem(key, JSON.stringify(newPalette));
+
+    setPopPalettes([...popPalettes, newPalette]);
+
+    setLsPalettes([...lsPalettes, newPalette]);
+
+    setMyPalettes([...myPalettes, newPalette]);
+
+    setPaletteName("");
+  };
+
+  return (
+    <PalettesStyled>
+      <header className="header">
+        <div className="logo">
+          <img src={logo} alt="Logo" className="logo-image" />
+        </div>
+        <div className="add-palette">
+          <div className="input-control">
+            <input
+              required
+              placeholder="Create Palette..."
+              value={paletteName}
+              onChange={(e) => {
+                setPaletteName(e.target.value);
+              }}
+              type="text"
+            />
+            <button
+              onClick={() => {
+                addPalette();
+              }}
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="pop-palettes">
+        <p className="text-with-margin"></p>
+        <h2 className="h2-pop">Popular Palettes</h2>
+
+        <div className="ppalettes">
+          {popPalettes.slice(0, 4).map((pal, index) => {
+            return (
+              <Link to={`/poppalettes/${pal.name}`} key={pal.name}>
+                <div className="poppalette">
+                  {pal.colors.map((col, i) => {
+                    return (
+                      <div
+                        key={i}
+                        className="popcolor"
+                        style={{ backgroundColor: col }}
+                      ></div>
+                    );
+                  })}
                 </div>
-            </div>
-        </PalettesStyled >
-    )
+                <p>{pal.name}</p>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="my-palettes">
+        <h2 className="h2-my">Your Palettes</h2>
+        <p className="text-margin"></p>
+        <div className="mpalettes">
+          {lsPalettes.map((pal, index) => {
+            return (
+              <Link to={`/mypalettes/${pal.name}`} key={pal.name}>
+                <div className="mypalette">
+                  {pal.colors.map((col, i) => {
+                    return (
+                      <div
+                        key={i}
+                        className="mycolor"
+                        style={{ backgroundColor: col }}
+                      ></div>
+                    );
+                  })}
+                </div>
+                <p>{pal.name}</p>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </PalettesStyled>
+  );
 }
-
 
 const PalettesStyled = styled.div`
     position: relative;
@@ -186,13 +201,11 @@ const PalettesStyled = styled.div`
                 font-weight: bold;
                 padding: 2rem;
                 color: white;
-                align-left: 200px;
             }
             .text-with-margin {
                 margin-top: 1px;
             }
             .ppalettes{
-
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
                 grid-gap: 25px;
@@ -366,4 +379,4 @@ const PalettesStyled = styled.div`
     }
     
 `;
-export default Palettes
+export default Palettes;

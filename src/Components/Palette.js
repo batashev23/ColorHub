@@ -9,6 +9,7 @@ const edit = <i class="fa-solid fa-pen"></i>
 const del = <i className="fa-sharp fa-solid fa-trash"></i>
 const brush = <i className="fa-solid fa-brush"></i>
 const paletteIcon = <i className="fa-solid fa-palette"></i>
+const copy = <i class="fa-solid fa-copy"></i>
 
 function Palette() {
     const {id} = useParams()
@@ -72,7 +73,6 @@ function Palette() {
     const editColor = () => {
         if(!colorPickerColor) return
         const newColors = [...myPalette.colors]
-        newColors.push(colorPickerColor)
         setMyPalette({...myPalette, colors: newColors})
     }
 
@@ -132,10 +132,6 @@ function Palette() {
                         key={index} 
                         style={{background: color}}
                         className="full-color"
-                        onClick={(e) => {
-                            handleCopyToClipboard(e)
-                            handleFullColorClick(e.target.style.backgroundColor);
-                        }}
                         >
                             <h4 data-title="Click to copy" className='name'>
                                 {toRgb === 'hex' ? color : convertToRGB(color)}
@@ -146,6 +142,10 @@ function Palette() {
                             <button className='btn-icon' onClick={() => {
                                 deleteColor(index);
                             }}>{del}</button>
+                            <button className='copy' onClick={(e) => {
+                              handleCopyToClipboard(e)
+                              handleFullColorClick(e.target.style.backgroundColor);
+                            }}>{copy}</button>
                         </div>
                 })}
             </div>
@@ -306,13 +306,12 @@ const PaletteStyled = styled.div`
     cursor: default;
 
     .full-color {
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
 
-      .name {
+      h4{
         font-size: 1.2rem;
         color: #fff;
         text-transform: uppercase;
@@ -320,26 +319,6 @@ const PaletteStyled = styled.div`
         text-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
         pointer-events: none;
         cursor: pointer;
-      }
-
-      .name::after {
-        position: absolute;
-        top: calc(100% + 5px);
-        left: calc(50% - 50px);
-        background-color: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 5px;
-        border-radius: 5px;
-        font-size: 12px;
-        z-index: 9999;
-        visibility: hidden;
-        opacity: 0;
-        transition: visibility 0s, opacity 0.3s ease;
-      }
-
-      .name:hover::after {
-        visibility: visible;
-        opacity: 1;
       }
 
       .edit-icon {
@@ -365,6 +344,20 @@ const PaletteStyled = styled.div`
         background: transparent;
         filter: drop-shadow(0 3px 0.3rem rgba(0, 0, 0, 0.4));
       }
+
+      .copy {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: .3rem .4rem;
+        font-size: 1.1rem;
+        color: #fff;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        filter: drop-shadow(0 3px 0.3rem rgba(0, 0, 0, 0.4));
+      }
+
     }
   }
 

@@ -4,10 +4,10 @@ export const mypalettes = [
         name: ("nFactorial"),
         createdAt: 1,
         colors: [
-            "#69d2e7","#a7dbd8","#e0e4cc","#f38630","#fa6900",
-            "#fe4365","#fc9d9a","#f9cdad","#c8c8a9","#83af9b",
-            "#ecd078","#d95b43","#c02942","#542437","#53777a",
-            "#556270","#4ecdc4","#c7f464","#ff6b6b","#c44d58"
+            "#FFFFFF", "#FAFAFA", "#F5F5F5", "#F0F0F0", "#EBEBEB",
+            "#E6E6E6", "#E0E0E0", "#DBDBDB", "#D6D6D6", "#D1D1D1",
+            "#CC0000", "#B30000", "#990000", "#800000", "#660000",
+            "#4C0000", "#330000", "#190000", "#000000", "#FF0000"
         ]
     }
 ]
